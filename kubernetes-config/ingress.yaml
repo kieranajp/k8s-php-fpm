@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: ingress
+  labels:
+    app: ingress
+spec:
+  selector:
+    matchLabels:
+      app: ingress
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: ingress
+    spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      containers:
+      - image: nginx:1.15.3-alpine
+        name: nginx
+        ports:
+        - name: http
+          containerPort: 80
+          hostPort: 80
+        volumeMounts:
+        - name: "config"
+          mountPath: "/etc/nginx"
+      volumes:
+      - name: config
+        configMap:
+          name: ingress-conf
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ingress-conf
+data:
+  nginx.conf: |
+    worker_processes 1;
+    error_log /dev/stdout info;
+
+    events {
+      worker_connections 10;
+    }
+
+    http {
+      access_log /dev/stdout;
+
+      server {
+        listen 80;
+        location / {
+          proxy_pass http://php-app.default.svc.cluster.local:8080;
+        }
+      }
+    }

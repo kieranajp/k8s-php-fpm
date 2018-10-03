@@ -1,0 +1,15 @@
+body {
+    display: flex;
+    justify-content: center;
+    background-color: hsla(31,15%,50%,.1);
+}
+
+main {
+    margin-top: 20vh;
+    font-family: sans-serif;
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding: 1rem;
+    max-width: 50%;
+    background-color: hsla(31,15%,50%,.1);
+}

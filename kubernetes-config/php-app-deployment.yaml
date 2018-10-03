@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: php-app
+  labels:
+    app: php-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: php-app
+  template:
+    metadata:
+      labels:
+        app: php-app
+    spec:
+      volumes:
+        # Create the shared files volume to be used in both pods
+        - name: shared-files
+          emptyDir: {}
+
+        # Add the ConfigMap we declared above as a volume for the pod
+        - name: nginx-config-volume
+          configMap:
+            name: nginx-config
+      containers:
+        - image: gcr.io/test-project-218312/php-app:latest
+          name: php-app
+          volumeMounts:
+            - name: shared-files
+              mountPath: /var/www/html
+          # After the container has started, copy the PHP files from this
+          # container's local filesystem to the shared volume, which is
+          # mounted at /var/www/html.
+          lifecycle:
+            postStart:
+              exec:
+                command: ["/bin/sh", "-c", "cp -r /server/http/public/. /var/www/html"]
+
+        - image: nginx:1.15.3-alpine
+          name: nginx
+          volumeMounts:
+            - name: shared-files
+              mountPath: /var/www/html
+            - name: nginx-config-volume
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: php-app
+spec:
+  selector:
+    app: php-app
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 80
