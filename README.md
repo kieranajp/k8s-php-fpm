@@ -1,6 +1,6 @@
 # Kubernetes configuration
 
-This repository contains K8s configuration for nginx / php-fpm applications that aren't just APIs!
+This repository contains K8s configuration for nginx / php-fpm applications that aren't just APIs! A shared volume is used to mount static files (js, css, etc) on both nginx and fpm containers, so that you can use this setup for a full website.
 
 It also includes nginx as an ingress controller, to save costs on GKE (as their HTTP Load Balancer isn't so cheap).
 
