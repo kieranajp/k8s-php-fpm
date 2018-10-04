@@ -35,7 +35,7 @@ php-app-55648d549c-drqk5   2/2       Running   0          8m
 
 ## Usage
 
-- Change the name of the container, as this is referencing one of mine and it won't work for you!
+- Change [the name of the container](https://github.com/kieranajp/k8s-php-fpm/blob/master/kubernetes-config/php-app-deployment.yaml#L27), as this is referencing one of mine and it won't work for you!
 - Build the container and push it to gcloud - see [here][1] for info
 - `kubectl apply -f kubernetes-config/`
 
