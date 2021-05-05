@@ -1,4 +1,4 @@
-FROM php:7.2-fpm-alpine
+FROM php:8.0.1-fpm-alpine
 
 # Install application/service
 ENV APP_DIR /server/http/
